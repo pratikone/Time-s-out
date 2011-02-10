@@ -6,6 +6,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.*;
 
@@ -21,6 +23,7 @@ public final class Timed extends JFrame implements ActionListener, MouseMotionLi
     String date;
     JButton jb = new JButton("Ninja");
     JLabel label = new JLabel(" " + new Date());
+    DateFormat df=new SimpleDateFormat("HH:mm:ss");
 
     //transparency
     /*
@@ -32,14 +35,17 @@ public final class Timed extends JFrame implements ActionListener, MouseMotionLi
         super("Trial by fire");
         setLayout(new FlowLayout());
 
+        label.setFont(new Font(label.getFont().getName(), label.getFont().getStyle(), label.getFont().getSize()+6));
         Container content = getContentPane();
         content.add(label, JLabel.CENTER);
         addMouseMotionListener(this);
         addMouseListener(this);
 
+
         javax.swing.Timer t = new javax.swing.Timer(1000, this);
         setUndecorated(true);
         com.sun.awt.AWTUtilities.setWindowOpacity(this, 0.6f);
+        
         /*
         try{
         Class c = Class.forName("com.sun.awt.AWTUtilities");
@@ -84,7 +90,10 @@ public final class Timed extends JFrame implements ActionListener, MouseMotionLi
     @Override
     public void actionPerformed(ActionEvent e) {
         // TODO Auto-generated method stub
-        date = new Date().toString();
+        //date = new Date().toString();
+       // System.out.println(df.format(new Date()));
+        date=df.format(new Date());
+        
         label.setText(date);
         repaint();
     }
@@ -104,7 +113,7 @@ public final class Timed extends JFrame implements ActionListener, MouseMotionLi
     public static void main(String args[]) {
 
         Timed tm = new Timed();
-        tm.setSize(215, 25);
+        tm.setSize(125, 23);
         tm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         //tm.setUndecorated(true);
         //tm.getRootPane().putClientProperty("Window.alpha", new Float(0.8f)); works on Mac OS X only
