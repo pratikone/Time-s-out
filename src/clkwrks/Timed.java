@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -18,12 +19,14 @@ import javax.swing.*;
  * always on top
  * @author Pratik Anand <pratik.preet@gmail.com>
  */
-public final class Timed extends JFrame implements ActionListener, MouseMotionListener, MouseListener {
+public final class Timed extends JDialog implements ActionListener, MouseMotionListener, MouseListener {
 
     String date;
     JButton jb = new JButton("Ninja");
     JLabel label = new JLabel(" " + new Date());
     DateFormat df=new SimpleDateFormat("HH:mm:ss");
+    
+    Point p_initial = null;
 
     //transparency
     /*
@@ -31,8 +34,26 @@ public final class Timed extends JFrame implements ActionListener, MouseMotionLi
     Date today=Calendar.getInstance().getTime();
     date=df.format("today");
      */
-    Timed() {
-        super("Trial by fire");
+    
+    //system tray
+    SystemTray systray = SystemTray.getSystemTray();
+    final PopupMenu popup = new PopupMenu();
+    final MenuItem mItem1 = new MenuItem("Exit");
+    
+    URL myurl = this.getClass().getResource("/images/wlan.png");
+    Toolkit tk = this.getToolkit();
+    Image image = tk.getImage(myurl);
+    
+    //Image image = Toolkit.getDefaultToolkit().getImage("src/images/wlan.png");
+    TrayIcon tray = new TrayIcon(image,"Timed",popup);
+     
+    
+
+    
+    
+    
+    Timed() throws AWTException{
+        //super("Trial by fire");
         setLayout(new FlowLayout());
 
         label.setFont(new Font(label.getFont().getName(), label.getFont().getStyle(), label.getFont().getSize()+6));
@@ -45,43 +66,18 @@ public final class Timed extends JFrame implements ActionListener, MouseMotionLi
         javax.swing.Timer t = new javax.swing.Timer(1000, this);
         setUndecorated(true);
         com.sun.awt.AWTUtilities.setWindowOpacity(this, 0.6f);
+         
+        //system tray
+        mItem1.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
         
-        /*
-        try{
-        Class c = Class.forName("com.sun.awt.AWTUtilities");
-        //com.sun.awt.AWTUtilities
-        // setWindowOpacity(window, .7f);
-        Method k = c.getMethod("setWindowOpacity", java.awt.Window.class, float.class);
-        k.invoke(null,this, 0.7f);
-        }
-
-        catch(Exception e){
-        e.printStackTrace();
-        }
-         */
-        //   content.add(jb);
-	 /*random start
-
-        try {
-        Class<?> awtUtilitiesClass = Class.forName("com.sun.awt.AWTUtilities");
-        Method mSetWindowOpacity = awtUtilitiesClass.getMethod("setWindowOpacity", Window.class, float.class);
-        mSetWindowOpacity.invoke(null, this, 0.75f);
-        } catch (NoSuchMethodException ex) {
-        ex.printStackTrace();
-        } catch (SecurityException ex) {
-        ex.printStackTrace();
-        } catch (ClassNotFoundException ex) {
-        ex.printStackTrace();
-        } catch (IllegalAccessException ex) {
-        ex.printStackTrace();
-        } catch (IllegalArgumentException ex) {
-        ex.printStackTrace();
-        } catch (Exception ex) {
-        ex.printStackTrace();
-        }
-
-
-        // random end  */
+        popup.add(mItem1);
+        systray.add(tray);
+        tray.setImageAutoSize(true);
         t.start();
 
 
@@ -92,6 +88,7 @@ public final class Timed extends JFrame implements ActionListener, MouseMotionLi
         // TODO Auto-generated method stub
         //date = new Date().toString();
        // System.out.println(df.format(new Date()));
+
         date=df.format(new Date());
         
         label.setText(date);
@@ -110,18 +107,22 @@ public final class Timed extends JFrame implements ActionListener, MouseMotionLi
         // TODO Auto-generated method stub
     }
 
-    public static void main(String args[]) {
+    public static void main(String args[]) throws AWTException {
 
         Timed tm = new Timed();
         tm.setSize(125, 23);
-        tm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        //tm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+              
+        
+        
         //tm.setUndecorated(true);
         //tm.getRootPane().putClientProperty("Window.alpha", new Float(0.8f)); works on Mac OS X only
         tm.setAlwaysOnTop(true);
         tm.setVisible(true);
 
     }
-    Point p_initial = null;
+    
 
     @Override
     public void mouseClicked(MouseEvent e) {
